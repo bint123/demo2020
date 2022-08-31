@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="ffd9164f-46ca-44fc-bce8-2753273b564f" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="choiceFlow" doc:id="1ef34103-5518-4f0e-8e1b-f17d77bd5fca" >
+		<http:listener doc:name="Listener" doc:id="be8176c6-baa8-4870-885c-02c1476528e0" config-ref="HTTP_Listener_config" path="/choice"/>
+		<set-variable value="#[attributes.queryParams.employee]" doc:name="Set Variable" doc:id="e26e7a95-3472-4c89-af1b-ce562b7e175a" variableName="employee"/>
+		<choice doc:name="Choice" doc:id="795e1459-f4e2-4c1e-8028-94650e335b85" >
+			<when expression="#[vars.employee =='sahi']">
+				<set-payload value="sahi is present" doc:name="sahi" doc:id="bad542cc-a22b-40b4-be1e-3d0b65f0ad47" />
+			</when>
+			<when expression="#[vars.employee == 'jihan']">
+				<set-payload value="jihan is present" doc:name="details of jihan" doc:id="ea11f954-bfb0-4e77-b9d9-097b378e75b1" />
+			</when>
+			<otherwise>
+				<flow-ref doc:name="Flow Reference" doc:id="818930c0-ad2c-4ddb-91d5-18212336189d" name="choiceSub_Flow"/>
+			</otherwise>
+		</choice>
+		<logger level="INFO" doc:name="Log the reply" doc:id="1880279f-2581-47df-b116-01a6b9f16a71" message='tom is absent'/>
+	</flow>
+	<sub-flow name="choiceSub_Flow" doc:id="013d4a85-6199-4daa-b6ab-2ae1a671d6ab" >
+		<logger level="INFO" doc:name="Logger" doc:id="a3010c94-0fcc-428a-b5b2-c327204a739c" message="employee who are absent"/>
+		<set-variable value="tom" doc:name="employee" doc:id="c59bc52e-4a63-4d2e-a847-778662e1f74d" variableName="details"/>
+		<set-payload value="absent" doc:name="tom" doc:id="c5565cab-1b1f-4415-9bc3-444dad2d5873" />
+	</sub-flow>
+</mule>
